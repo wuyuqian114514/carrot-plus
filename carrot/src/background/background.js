@@ -1,4 +1,3 @@
-import '../../polyfill/browser-polyfill.min.js';
 import { LOCAL } from '../util/storage-wrapper.js';
 import * as settings from '../util/settings.js';
 import Contests from './cache/contests.js';

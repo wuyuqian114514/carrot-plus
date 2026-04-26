@@ -59,9 +59,7 @@ edge://extensions/
 carrot-plus-main/dist/carrot-plus
 ```
 
-推荐选择 `dist/carrot-plus`。新版仓库里的 `carrot/` 也可以直接加载，但 `dist/carrot-plus` 是给普通用户准备的安装目录。
-
-不要选择 `carrot-plus-main/` 这个仓库根目录；根目录不是浏览器插件目录。
+注意：不要选择 `carrot-plus-main/`，也不要选择 `carrot-plus-main/carrot/`。Chrome 必须加载 `dist/carrot-plus`，否则会出现 `background.scripts requires manifest version of 2 or lower` 或 `browser is not defined`。
 
 ### 方式二：加载本地构建目录
 
@@ -149,19 +147,18 @@ https://codeforces.com/contest/2222/standings
 
 ### `background.scripts requires manifest version of 2 or lower`
 
-你下载的是旧版本仓库，或加载了旧的源码目录 `carrot/`。
+你加载了源码目录 `carrot/`，不是 Chrome 构建目录。
 
 解决方法：
 
 1. 删除浏览器里旧的错误扩展。
-2. 重新下载最新版 GitHub ZIP。
-3. 加载：
+2. 如果是 GitHub 下载包，加载：
 
 ```text
 dist/carrot-plus
 ```
 
-如果你是源码开发，运行：
+3. 如果是源码开发，运行：
 
 ```bash
 ./build.sh -c
