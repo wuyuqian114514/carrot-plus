@@ -71,17 +71,19 @@ pack_chrome() {
   copy_carrot "${copy_dir}"
   cd "${copy_dir}"
 
-  # Download the polyfill.
+  # Download the polyfill if the source tree does not already include it.
   local polyfill_url='https://unpkg.com/webextension-polyfill@0.12.0/dist/browser-polyfill.min.js'
   local polyfill_download_path='downloads/browser-polyfill.min.js'
   local polyfill_path='polyfill/browser-polyfill.min.js'
   mkdir -p downloads
-  if [[ ! -f "${polyfill_download_path}" ]]; then
+  if [[ ! -f "carrot/${polyfill_path}" && ! -f "${polyfill_download_path}" ]]; then
     curl -s -o "${polyfill_download_path}" "${polyfill_url}"
     sed -i '/sourceMappingURL/ d' "${polyfill_download_path}"
   fi
-  mkdir -p "carrot/$(dirname "${polyfill_path}")"
-  cp "${polyfill_download_path}" "carrot/${polyfill_path}"
+  if [[ ! -f "carrot/${polyfill_path}" ]]; then
+    mkdir -p "carrot/$(dirname "${polyfill_path}")"
+    cp "${polyfill_download_path}" "carrot/${polyfill_path}"
+  fi
 
   cd carrot
 
@@ -89,18 +91,23 @@ pack_chrome() {
   local polyfill_script="<script src=\"\/${polyfill_path/\//\\\/}\"><\/script>"
   shopt -s globstar
   for html_file in **/*.html; do
-    sed -i -r "0,/<script/ s/((\s+)<script)/\2${polyfill_script}\n\1/" "${html_file}"
+    if ! grep -q "${polyfill_path}" "${html_file}"; then
+      sed -i -r "0,/<script/ s/((\s+)<script)/\2${polyfill_script}\n\1/" "${html_file}"
+    fi
   done
 
   # Import the polyfill in background.js.
-  sed -i -e "1iimport '../../${polyfill_path}';" src/background/background.js
+  if ! grep -q "${polyfill_path}" src/background/background.js; then
+    sed -i -e "1iimport '../../${polyfill_path}';" src/background/background.js
+  fi
 
   # Add the polyfill as content script.
-  jq_manifest_replace ".content_scripts[].js |= [\"${polyfill_path}\"] + ." manifest.json
+  jq_manifest_replace ".content_scripts[].js |= if index(\"${polyfill_path}\") then . else [\"${polyfill_path}\"] + . end" manifest.json
 
-  # Change the background script to service_worker
-  jq_manifest_replace '.background.service_worker = .background.scripts[0] |
-      del(.background.scripts)' manifest.json
+  # Change the background script to service_worker when building from the old Firefox manifest.
+  jq_manifest_replace 'if .background.scripts then
+      .background.service_worker = .background.scripts[0] | del(.background.scripts)
+      else . end' manifest.json
 
   if command -v rsvg-convert >/dev/null 2>&1; then
     # Prepare png icons from svg when librsvg is available.

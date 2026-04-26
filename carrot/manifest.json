@@ -16,13 +16,16 @@
     "*://*.codeforces.com/*"
   ],
   "background": {
-    "scripts": ["src/background/background.js"],
+    "service_worker": "src/background/background.js",
     "type": "module"
   },
   "content_scripts": [
     {
       "matches": ["*://*.codeforces.com/*"],
-      "js": ["src/content/content.js"],
+      "js": [
+        "polyfill/browser-polyfill.min.js",
+        "src/content/content.js"
+      ],
       "css": ["src/content/content.css"]
     }
   ],
@@ -33,10 +36,5 @@
     "default_icon": "icons/icon.svg",
     "default_title": "Carrot",
     "default_popup": "src/popup/popup.html"
-  },
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "{f0eeb71a-e5d6-48e6-a818-568a6bef1bc0}"
-    }
   }
 }
