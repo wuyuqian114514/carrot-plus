@@ -1,0 +1,42 @@
+{
+  "manifest_version": 3,
+  "name": "Carrot plus",
+  "version": "1.0.1",
+  "description": "Rating predictor for Codeforces",
+  "icons": {
+    "48": "icons/icon.svg",
+    "96": "icons/icon.svg",
+    "128": "icons/icon.svg"
+  },
+  "permissions": [
+    "storage",
+    "unlimitedStorage"
+  ],
+  "host_permissions": [
+    "*://*.codeforces.com/*"
+  ],
+  "background": {
+    "scripts": ["src/background/background.js"],
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.codeforces.com/*"],
+      "js": ["src/content/content.js"],
+      "css": ["src/content/content.css"]
+    }
+  ],
+  "options_ui": {
+    "page": "src/options/options.html"
+  },
+  "action": {
+    "default_icon": "icons/icon.svg",
+    "default_title": "Carrot",
+    "default_popup": "src/popup/popup.html"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{f0eeb71a-e5d6-48e6-a818-568a6bef1bc0}"
+    }
+  }
+}
