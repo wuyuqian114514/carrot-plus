@@ -21,9 +21,21 @@ Carrot plus 是一个用于增强 [Codeforces](https://codeforces.com/) 榜单�
 
 ## 安装方式
 
-### 方式一：加载已构建目录
+### 方式一：直接安装 GitHub 下载包
 
-如果你已经拿到了构建后的目录，打开浏览器扩展页面：
+在 GitHub 页面点击：
+
+```text
+Code -> Download ZIP
+```
+
+下载后解压，得到类似这个目录：
+
+```text
+carrot-plus-main/
+```
+
+打开浏览器扩展页面：
 
 Chrome:
 
@@ -41,21 +53,23 @@ edge://extensions/
 
 1. 打开右上角「开发者模式」。
 2. 点击「加载已解压的扩展程序」。
-3. 选择构建后的插件目录，例如：
+3. 选择这个目录：
 
 ```text
-carrot-chrome-fixed
+carrot-plus-main/dist/carrot-plus
 ```
 
-或源码仓库里的：
+注意：不要选择 `carrot-plus-main/`，也不要选择 `carrot-plus-main/carrot/`。Chrome 必须加载 `dist/carrot-plus`，否则会出现 `background.scripts requires manifest version of 2 or lower` 或 `browser is not defined`。
+
+### 方式二：加载本地构建目录
+
+如果你是从源码构建，构建完成后加载：
 
 ```text
 tmp-chrome/carrot
 ```
 
-注意：不要直接加载源码目录 `carrot/`。Chrome 必须加载构建后的目录，否则会出现 `background.scripts requires manifest version of 2 or lower` 或 `browser is not defined`。
-
-### 方式二：从源码构建
+### 方式三：从源码构建
 
 需要本机有这些工具：
 
@@ -138,13 +152,19 @@ https://codeforces.com/contest/2222/standings
 解决方法：
 
 1. 删除浏览器里旧的错误扩展。
-2. 运行：
+2. 如果是 GitHub 下载包，加载：
+
+```text
+dist/carrot-plus
+```
+
+3. 如果是源码开发，运行：
 
 ```bash
 ./build.sh -c
 ```
 
-3. 加载：
+然后加载：
 
 ```text
 tmp-chrome/carrot
@@ -154,7 +174,7 @@ tmp-chrome/carrot
 
 Chrome 没有直接提供 Firefox 风格的 `browser` API。构建后的目录会自动注入 polyfill。
 
-解决方法：不要加载源码目录，加载 `tmp-chrome/carrot` 或发布包解压后的目录。
+解决方法：不要加载源码目录。GitHub 下载包加载 `dist/carrot-plus`，源码构建后加载 `tmp-chrome/carrot`。
 
 ### `Could not establish connection. Receiving end does not exist.`
 
